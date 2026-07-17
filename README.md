@@ -20,11 +20,11 @@ A large-scale recommender system built on Amazon's Sports & Outdoors review data
 
 ## Quick Results
 
-| Model | RMSE | Precision@10 | Recall@10 | NDCG@10 | Coverage | Diversity | Novelty | Serendipity@10 |
+| Model | Precision@10 | Recall@10 | NDCG@10 | Coverage | Diversity | Novelty | Serendipity@10 |
 |---|---|---|---|---|---|---|---|---|
-| ALS (Collaborative) | 1.2554 | 0.00067 | 0.00133 | 0.00217 | 2.24% | 0.7438 | 16.9080 | 0.00067 |
-| Content-Based | — | 0.00067 | 0.00133 | 0.00311 | 2.89% | 0.0956 | 16.7006 | 0.00067 |
-| Hybrid | — | 0.00067 | 0.00167 | 0.00285 | 2.53% | 0.6790 | 16.8172 | 0.00067 |
+| ALS (Collaborative) | 0.00067 | 0.00133 | 0.00217 | 2.24% | 0.7438 | 16.9080 | 0.00067 |
+| Content-Based |  0.00067 | 0.00133 | 0.00311 | 2.89% | 0.0956 | 16.7006 | 0.00067 |
+| Hybrid | 0.00067 | 0.00167 | 0.00285 | 2.53% | 0.6790 | 16.8172 | 0.00067 |
 
 **Key finding:** Content-Based filtering achieved the best ranking quality (NDCG@10) and highest catalog coverage, but at the cost of much lower diversity — its recommendations are more thematically narrow per user (similar items to what they already liked), while ALS spreads across more varied categories. The Hybrid model balances both, improving Recall@10 over either individual model while retaining most of ALS's diversity.
 
