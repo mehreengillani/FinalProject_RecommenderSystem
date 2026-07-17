@@ -21,7 +21,7 @@ A large-scale recommender system built on Amazon's Sports & Outdoors review data
 ## Quick Results
 
 | Model | Precision@10 | Recall@10 | NDCG@10 | Coverage | Diversity | Novelty | Serendipity@10 |
-|---|---|---|---|---|---|---|---|---|
+|---|---|---|---|---|---|---|---|
 | ALS (Collaborative) | 0.00067 | 0.00133 | 0.00217 | 2.24% | 0.7438 | 16.9080 | 0.00067 |
 | Content-Based |  0.00067 | 0.00133 | 0.00311 | 2.89% | 0.0956 | 16.7006 | 0.00067 |
 | Hybrid | 0.00067 | 0.00167 | 0.00285 | 2.53% | 0.6790 | 16.8172 | 0.00067 |
