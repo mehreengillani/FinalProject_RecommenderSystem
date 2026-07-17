@@ -1,37 +1,37 @@
 # Sports & Outdoors Recommender System
 
-A large-scale recommender system built on Amazon's Sports & Outdoors review data (339K+ ratings, 27K+ users, 32K+ items), implemented in PySpark on Databricks. Three approaches are built and compared: **collaborative filtering** (ALS), **content-based filtering** (TF-IDF + cosine similarity), and a **hybrid** blend of both, evaluated across seven standard recommender metrics.
+A large-scale recommender system built on Amazon's Sports & Outdoors review data (339K+ ratings, 73K+ items), implemented in PySpark on Databricks. Three approaches are built and compared: **collaborative filtering** (ALS), **content-based filtering** (TF-IDF + cosine similarity), and a **hybrid** blend of both.
 
 ## Highlights
 
-- **Collaborative filtering:** Spark MLlib ALS, tuned via grid search (rank, regParam), final RMSE **1.2554**
-- **Content-based filtering:** TF-IDF over item titles/categories, cosine similarity to rating-weighted user profiles
-- **Hybrid:** candidate-blending of ALS and content-based top-N lists, normalized and re-ranked
-- **Evaluation:** RMSE, Precision@10, Recall@10, NDCG@10, Coverage, Diversity, Novelty, Serendipity@10 — computed on a held-out test sample and compared across all three models
-- Fully distributed pipeline (load → join → filter → index → train → evaluate) built to run within Databricks Free Edition serverless compute constraints
+- **Collaborative filtering:** Spark MLlib ALS, tuned via grid search, final RMSE **1.6817** (rank=20, regParam=0.1, seed=42)
+- **Content-based filtering:** TF-IDF over title, categories, and description (vocab=500), cosine similarity to user profiles
+- **Hybrid:** candidate-blending of ALS and content-based top-20 lists (α=0.5)
+- **Evaluation:** RMSE, Precision@10, Recall@10, NDCG@10, Coverage, Diversity, Novelty, Serendipity@10 — compared across all three models on a 1,000-user held-out sample
+- Fully distributed pipeline built to run within Databricks Free Edition serverless compute constraints
 
 ## Repo Contents
 
 | File | Description |
 |---|---|
-| `FinalProject.ipynb` | Full implementation notebook — data pipeline, ALS training/tuning, content-based model, hybrid model, evaluation |
-| `Final_Project_Documentation.md` | Full write-up: methodology, tuning results, metric definitions, results, and discussion |
-| `FinalProjectPlanningDocument.ipynb` | Original planning document submitted prior to implementation |
+| `FinalProject.ipynb` | Full implementation notebook — pipeline, ALS training/tuning, content-based model, hybrid model, evaluation |
+| `Final_Project_Documentation.md` | Full write-up: methodology, tuning results, metric definitions, results, discussion |
+| `FinalProjectPlanningDocument.ipynb` | Original planning document |
 
-## Quick Results
+## Results
 
-| Model | Precision@10 | Recall@10 | NDCG@10 | Coverage | Diversity | Novelty | Serendipity@10 |
-|---|---|---|---|---|---|---|---|
-| ALS (Collaborative) | 0.00067 | 0.00133 | 0.00217 | 2.24% | 0.7438 | 16.9080 | 0.00067 |
-| Content-Based |  0.00067 | 0.00133 | 0.00311 | 2.89% | 0.0956 | 16.7006 | 0.00067 |
-| Hybrid | 0.00067 | 0.00167 | 0.00285 | 2.53% | 0.6790 | 16.8172 | 0.00067 |
+| Model | RMSE | Precision@10 | Recall@10 | NDCG@10 | Coverage | Diversity |
+|---|---|---|---|---|---|---|
+| ALS (Collaborative) | 1.6817 | 0.0000 | 0.0000 | 0.0000 | 3.96% | 0.7329 |
+| Content-Based | 2.6100* | 0.0009 | 0.0028 | 0.0041 | 8.42% | 0.1364 |
+| Hybrid | 2.1687* | 0.0000 | 0.0000 | 0.0000 | 4.32% | 0.7065 |
 
-**Key finding:** Content-Based filtering achieved the best ranking quality (NDCG@10) and highest catalog coverage, but at the cost of much lower diversity — its recommendations are more thematically narrow per user (similar items to what they already liked), while ALS spreads across more varied categories. The Hybrid model balances both, improving Recall@10 over either individual model while retaining most of ALS's diversity.
+*Rescaled similarity score, not a native rating prediction.
 
-*(Full metrics table and discussion in `Final_Project_Documentation.md`, Section 5–6.)*
+**Key finding:** Content-Based filtering was the only model to register nonzero ranking hits and had the widest catalog coverage, but the lowest per-user diversity (a "filter bubble" effect). ALS had the best rating-prediction accuracy and the most diverse individual recommendation lists. Neither individual model dominates — see `Final_Project_Documentation.md` for full discussion.
 
 ## Method Summary
 
-Ratings were filtered to users/items with 3+ ratings to address sparsity while comfortably exceeding the 10K user/item scale threshold. ALS was trained on an 80/20 split and tuned across rank and regularization; a content-based model was added using TF-IDF item vectors and user content profiles; a hybrid model combines both signals via min-max normalized score blending. All models were evaluated on the same 300-user test sample using precision, recall, ranking, and beyond-accuracy metrics (coverage, diversity, novelty, serendipity).
+Ratings were filtered to users/items with 3+ ratings (339,076 ratings retained, well above the 10K user/item threshold). ALS was tuned via grid search on rank/regParam; a content-based model was added using TF-IDF item vectors; a hybrid model blends both signals via min-max normalized score combination. All models were evaluated on the same 1,000-user test sample.
 
-See `Final_Project_Documentation.md` for full methodology, tuning details, and discussion of results and limitations.
+See `Final_Project_Documentation.md` for full methodology, tuning details, and limitations.
